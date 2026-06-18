@@ -57,23 +57,23 @@ class Vehicle:
 class ParkingSpot:
     """
     Represents one physical parking spot in the lot.
-    It knows its ID, what size vehicle fits, and if it's free.
+    It knows its ID, what size vehicle fits, and if it's available.
     """
 
     def __init__(self, spot_id, size):
         self.spot_id     = spot_id   # e.g. "C1", "R3", "O2"
         self.size        = size      # "Small", "Medium", or "Large"
-        self.is_free     = True      # True = available
+        self.is_available     = True      # True = available
         self.parked_plate = None     # Which plate is currently parked here
 
     def park(self, plate):
         """Mark this spot as occupied."""
-        self.is_free      = False
+        self.is_available      = False
         self.parked_plate = plate
 
     def leave(self):
-        """Mark this spot as free again."""
-        self.is_free      = True
+        """Mark this spot as available again."""
+        self.is_available      = True
         self.parked_plate = None
 
 
@@ -150,17 +150,17 @@ class ParkingLot:
 
     def _find_spot(self, size):
         """
-        Find the first free spot that fits the vehicle size.
+        Find the first available spot that fits the vehicle size.
         Size order: Small → Medium → Large
-        If no Small spot is free, a motorcycle can overflow to Medium.
+        If no Small spot is available, a motorcycle can overflow to Medium.
         """
         size_order = ["Small", "Medium", "Large"]
         start      = size_order.index(size)          # Start from required size
 
         for s in size_order[start:]:                 # Try required size first, then bigger
             for spot in self.spots:
-                if spot.size == s and spot.is_free:
-                    return spot                      # Return first free match
+                if spot.size == s and spot.is_available:
+                    return spot                      # Return first available match
 
         return None                                  # No spot found
 
@@ -168,7 +168,7 @@ class ParkingLot:
         """
         Vehicle arrives. Steps:
         1. Create Vehicle object from plate
-        2. Find a free spot
+        2. Find a available spot
         3. Issue a Ticket
         4. Mark spot as occupied
         """
@@ -210,7 +210,7 @@ class ParkingLot:
         1. Find the ticket by plate
         2. Set exit time
         3. Calculate fare
-        4. Free the spot
+        4. available the spot
         5. Print receipt
         """
         plate = plate.upper().strip()
@@ -222,7 +222,7 @@ class ParkingLot:
         ticket = self.active_tickets.pop(plate)          # Remove from active list
         ticket.exit_time = datetime.now()                # Record exit time
 
-        # Free the spot
+        # available the spot
         for spot in self.spots:
             if spot.spot_id == ticket.spot_id:
                 spot.leave()
@@ -251,14 +251,14 @@ class ParkingLot:
         print(f"  {'Spot':<6}  {'Size':<8}  {'Status'}")
         print("  " + "─" * 35)
         for spot in self.spots:
-            state = spot.parked_plate if not spot.is_free else "Free"
+            state = spot.parked_plate if not spot.is_available else "available"
             print(f"  {spot.spot_id:<6}  {spot.size:<8}  {state}")
 
         total    = len(self.spots)
-        occupied = sum(1 for s in self.spots if not s.is_free)
-        free     = total - occupied
+        occupied = sum(1 for s in self.spots if not s.is_available)
+        available     = total - occupied
         print()
-        print(f"  Total: {total}  |  Occupied: {occupied}  |  Free: {free}")
+        print(f"  Total: {total}  |  Occupied: {occupied}  |  available: {available}")
 
 
 # ============================================================
@@ -300,11 +300,11 @@ def main():
             lot.status()
 
         elif choice == "4":
-            print("\n  Goodbye!\n")
+            print("\n  Thank you for using the Parking Lot Management System!\n")
             break
 
         else:
-            print("  Please enter 1, 2, 3 or 4.")
+            print("  Please choose 1, 2, 3 or 4.")
 
 
 if __name__ == "__main__":
