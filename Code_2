@@ -28,10 +28,10 @@ class Vehicle:
         "Truck":      "Large",
     }
 
-    def __init__(self, vehicle_type, plate=None):
-        self.type  = vehicle_type                        # Set directly from user choice
-        self.size  = self.TYPE_TO_SIZE[vehicle_type]     # Derived from type
-        self.plate = plate.upper() if plate else None    # Optional; None if skipped
+    def __init__(self, vehicle_type, plate=None):        #init is constructor
+        self.type  = vehicle_type                        # Set directly from user choice - directly from menu
+        self.size  = self.TYPE_TO_SIZE[vehicle_type]     # Derived from type - Decides the size of vehicle based on the type of vehicle
+        self.plate = plate.upper() if plate else None    # Optional; None if skipped  - It is number plate of vehicle
 
 
 # ============================================================
